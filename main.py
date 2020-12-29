@@ -25,8 +25,9 @@ class Consultas:
             query = f'DELETE FROM PASSWORDS WHERE WEB_SITE = "{site}"'
             self.run_query(query)
             logger.info('El registro se ha eliminado correctamente')
-        except: 
-            logger.warning('Ohh! ha ocurrido un error, tal vez el sitio no existe en la base de datos')
+        except:
+            logger.warning(
+                'Ohh! ha ocurrido un error, tal vez el sitio no existe en la base de datos')
 
     def update_password(self):
         """function to update a selected user in the data base
