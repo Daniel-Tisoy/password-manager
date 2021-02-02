@@ -1,5 +1,6 @@
 import sqlite3
 import getpass
+import pyperclip as clipboard
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -55,7 +56,7 @@ class Consultas:
             logger.warning('Ingrese n o c')
         logger.info('Actualizado con exito :)')
 
-    def search_password(self, site=None):
+    def search_password(self, site=None, iprint=True):
         """Function to search a record in the data base
 
         Args:
@@ -68,11 +69,16 @@ class Consultas:
             site = input('web site: ')
             query = f'SELECT * FROM PASSWORDS WHERE WEB_SITE = "{site}"'
             user = (self.run_query(query)).fetchall()
-            self.print_data(user)
+            if iprint:
+                self.print_data(user)
         else:
             query = f'SELECT * FROM PASSWORDS WHERE WEB_SITE = "{site}"'
             user = (self.run_query(query)).fetchall()
-            self.print_data(user)
+            if iprint:
+                self.print_data(user)
+
+        # <class 'list'> 1 [('duolingo.com', 'ltisoy', 'luistisoy2001')]
+
         return user
 
     def add_password(self):
@@ -101,11 +107,19 @@ class Consultas:
         Args:
             data (list, optional): a list of tuples. Defaults to list().
         """
+
         print('-----------------------------------')
         print('SITE         USER        PASSWORD')
         for i in data:
-            print('{}   {}  {}'.format(i[0], i[1], i[2]))
+            print('{}   {}  {}'.format(i[0], i[1], '*'*len(i[2])))
         print('-----------------------------------')
+
+    def copy_password(self):
+        users = self.search_password(iprint=False)
+        user_name = input('usuario: ').lower()
+        for user in users:
+            if user_name == user[1]:
+                clipboard.copy(user[2])
 
     def run_query(self, query, parameters=()):
         """Function to execute database querys
@@ -138,6 +152,7 @@ def run():
                     [n]uevo usuario
                     [l]istar contraseñas
                     [b]uscar
+                    [bu]scar y copiar
                     [a]ctualizar 
                     [e]liminar
                     [s]alir
@@ -153,6 +168,8 @@ def run():
             user_pass.list_table()
         elif menu == 'b':
             user_pass.search_password()
+        elif menu == 'bu':
+            user_pass.copy_password()
         elif menu == 'a':
             user_pass.update_password()
         elif menu == 'e':
