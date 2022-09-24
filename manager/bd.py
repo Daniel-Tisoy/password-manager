@@ -49,8 +49,16 @@ class Db:
         data = (site, username, password)
         self.run_query(sql_query, data)
 
-    def update(self):
-        pass
+    def update(self, db_column, data):
+        """update a record through the id,
+        database fields: site, username, password
+
+        Args:
+            db_column (str): db fields string
+            data (tuple): send (new_column_value, id)
+        """
+        sql_query = f'UPDATE passwords SET {db_column} = ? WHERE id = ?'
+        self.run_query(sql_query, data)
 
     def delete(self):
         pass
