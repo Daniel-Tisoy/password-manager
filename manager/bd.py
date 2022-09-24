@@ -59,4 +59,11 @@ class Db:
         pass
 
     def get_all(self):
-        pass
+        """get all of the passwords records in the db
+
+        Returns:
+            list: [(site, username, password)]
+        """
+        sql_query = 'SELECT * FROM passwords'
+        password_records = (self.run_query(sql_query)).fetchall()
+        return password_records
