@@ -34,8 +34,17 @@ class Db:
 
         self.run_query(sql_query)
 
-    def add(self):
-        pass
+    def add(self, site, username, password):
+        """add a new row in the passwords db
+
+        Args:
+            site (str): website domain
+            username (str): your website account username or mail
+            password (str): your password
+        """
+        sql_query = '''INSERT INTO passwords VALUES (?. ?. ?)'''
+        data = (site, username, password)
+        self.run_query(sql_query, data)
 
     def update(self):
         pass
