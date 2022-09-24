@@ -60,8 +60,15 @@ class Db:
         sql_query = f'UPDATE passwords SET {db_column} = ? WHERE id = ?'
         self.run_query(sql_query, data)
 
-    def delete(self):
-        pass
+    def delete(self, unique_key):
+        """delete a record through its id
+
+        Args:
+            unique_key (int): its the id of the row
+        """
+        sql_query = f'DELETE FROM passwords WHERE id = {unique_key}'
+        self.run_query(sql_query)
+
 
     def get_by_id(self):
         pass
