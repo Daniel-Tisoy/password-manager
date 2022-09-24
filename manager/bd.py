@@ -45,7 +45,7 @@ class Db:
             username (str): your website account username or mail
             password (str): your password
         """
-        sql_query = '''INSERT INTO passwords VALUES (?. ?. ?)'''
+        sql_query = 'INSERT INTO passwords(site, username, password) VALUES (?, ?, ?)'
         data = (site, username, password)
         self.run_query(sql_query, data)
 
