@@ -1,180 +1,51 @@
-import sqlite3
-import getpass
-import pyperclip as clipboard
-import logging
+from manager.bd import Db
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-class Consultas:
-    db_name = 'passwords'
-
-    def __init__(self):
-        try:
-            self.open_bbdd()
-            logger.info(
-                'Se creó la tabla PASSWORDS en {}'.format(self.db_name))
-        except:
-            logger.info('La base de datos está lista')
-
-    def delete_password(self):
-        """Function to delete a record (site, user, password) from the database
-        """
-        try:
-            site = input('sitio web: ')
-            query = f'DELETE FROM PASSWORDS WHERE WEB_SITE = "{site}"'
-            self.run_query(query)
-            logger.info('El registro se ha eliminado correctamente')
-        except:
-            logger.warning(
-                'Ohh! ha ocurrido un error, tal vez el sitio no existe en la base de datos')
-
-    def update_password(self):
-        """function to update a selected user in the data base
-        """
-        user = self.search_password()
-        command = input('''
-                            [n]ombre
-                            [c]ontraseña
-                            ''').lower()
-        if command == 'n':
-            old_user = user[0][1]
-            new_user = input('nuevo usuario: ')
-            parameters = (new_user, old_user)
-            query = 'UPDATE PASSWORDS SET USER = ? WHERE USER = ?'
-            self.run_query(query, parameters)
-            self.search_password(user[0][0])
-        elif command == 'c':
-            old_password = user[0][2]
-            new_password = getpass.getpass('nueva contraseña: ')
-            parameters = (new_password, old_password)
-            query = 'UPDATE PASSWORDS SET PASSWORD = ? WHERE PASSWORD = ?'
-            self.run_query(query, parameters)
-            self.search_password(user[0][0])
-        else:
-            logger.warning('Ingrese n o c')
-        logger.info('Actualizado con exito :)')
-
-    def search_password(self, site=None, iprint=True):
-        """Function to search a record in the data base
-
-        Args:
-            site (str, optional): define the web site, if it is None, the funtion will ask you the web site name. Defaults to None.
-
-        Returns:
-            list: list of tuples
-        """
-        if site == None:
-            site = input('web site: ')
-            query = f'SELECT * FROM PASSWORDS WHERE WEB_SITE = "{site}"'
-            user = (self.run_query(query)).fetchall()
-            if iprint:
-                self.print_data(user)
-        else:
-            query = f'SELECT * FROM PASSWORDS WHERE WEB_SITE = "{site}"'
-            user = (self.run_query(query)).fetchall()
-            if iprint:
-                self.print_data(user)
-
-        # <class 'list'> 1 [('duolingo.com', 'ltisoy', 'luistisoy2001')]
-
-        return user
-
-    def add_password(self):
-        """Function to Add new user
-        """
-        logger.info('añadir nuevos datos')
-        web_site = input('Sitio web: ')
-        user = input('usuario: ')
-        password = getpass.getpass()
-        query = 'INSERT INTO PASSWORDS VALUES (?,?,?)'
-        parameters = (web_site, user, password)
-        self.run_query(query, parameters)
-        logger.info(
-            'se añadió {} a la base de datos de manera correcta'.format(user))
-
-    def list_table(self):
-        """ Function to print all users
-        """
-        query = 'SELECT * FROM PASSWORDS'
-        users = (self.run_query(query)).fetchall()
-        self.print_data(users)
-
-    def print_data(self, data=list()):
-        """funtion to format the print of users
-
-        Args:
-            data (list, optional): a list of tuples. Defaults to list().
-        """
-
-        print('-----------------------------------')
-        print('SITE         USER        PASSWORD')
-        for i in data:
-            print('{}   {}  {}'.format(i[0], i[1], '*'*len(i[2])))
-        print('-----------------------------------')
-
-    def copy_password(self):
-        users = self.search_password(iprint=False)
-        user_name = input('usuario: ').lower()
-        for user in users:
-            if user_name == user[1]:
-                clipboard.copy(user[2])
-
-    def run_query(self, query, parameters=()):
-        """Function to execute database querys
-
-        Args:
-            query (string): sql query -> 
-            parameters (tuple, optional): parameters of the query. Defaults to ().
-
-        Returns:
-            Object: Object cursor
-        """
-        with sqlite3.connect(self.db_name) as connection:
-            logger.info(
-                'Conectando a la base de datos {}'.format(self.db_name))
-            cursor = connection.cursor()
-            result = cursor.execute(query, parameters)
-            connection.commit()
-        return result
-
-    def open_bbdd(self):
-        """Function to create table 'PASSWORDS'
-        """
-        query = 'CREATE TABLE PASSWORDS (WEB_SITE VARCHAR(50), USER VARCHAR(50),PASSWORD VARCHAR(20))'
-        self.run_query(query)
-
-
-def run():
-    print('Bienvenido a pass-world by daniel')
+def show_menu():
+    print("   W E L C O M E   ")
+    print("password manager by dtisoy")
     menu = input('''
-                    [n]uevo usuario
-                    [l]istar contraseñas
-                    [b]uscar
-                    [bu]scar y copiar
-                    [a]ctualizar 
-                    [e]liminar
-                    [s]alir
+                    [n]ew user
+                    [l]ist passwords 
+                    [s]earch
+                    [u]pdate
+                    [d]elete
+                    [q]uit
                     ''').lower()
-
-    if menu == 's':
+    if menu == 'q':
+        print(r'see you :)')
         exit()
-    else:
-        user_pass = Consultas()
-        if menu == 'n':
-            user_pass.add_password()
-        elif menu == 'l':
-            user_pass.list_table()
-        elif menu == 'b':
-            user_pass.search_password()
-        elif menu == 'bu':
-            user_pass.copy_password()
-        elif menu == 'a':
-            user_pass.update_password()
-        elif menu == 'e':
-            user_pass.delete_password()
+    if menu == 'n':
+        add_pass()
+    elif menu =="l":
+        get_all_pass()
+    elif menu == "s":
+        get_pass()
+    elif menu == 'u':
+        update_pass()
+    elif menu == "d":
+        delete_pass()
+    
+def add_pass():
+    pass
 
 
+def update_pass():
+    pass
+
+
+def delete_pass():
+    pass
+
+
+def get_pass():
+    # get pass using like sql statement
+    pass
+
+
+def get_all_pass():
+    pass
 if __name__ == "__main__":
-    run()
+    # get the db
+    my_passwords_db = Db(".danielPasswords")
+    # show the menu
+    show_menu()
