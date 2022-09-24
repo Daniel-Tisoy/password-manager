@@ -30,7 +30,10 @@ class Db:
     def create_table(self):
         """create the table passwords in the db
         """
-        sql_query = 'CREATE TABLE passwords (site VARCHAR(100), username VARCHAR(50),password VARCHAR(50))'
+        sql_query = '''CREATE TABLE passwords (id INTEGER PRIMARY KEY,
+            site VARCHAR(100), 
+            username VARCHAR(50), 
+            password VARCHAR(50))'''
 
         self.run_query(sql_query)
 
