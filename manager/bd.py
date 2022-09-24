@@ -26,6 +26,14 @@ class Db:
             connection.commit()
 
         return result
+
+    def create_table(self):
+        """create the table passwords in the db
+        """
+        sql_query = 'CREATE TABLE passwords (site VARCHAR(100), username VARCHAR(50),password VARCHAR(50))'
+
+        self.run_query(sql_query)
+
     def add(self):
         pass
 
