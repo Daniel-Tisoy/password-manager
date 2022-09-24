@@ -1,3 +1,4 @@
+""" this file is for manage the database with passwords"""
 import sqlite3
 
 
@@ -69,9 +70,18 @@ class Db:
         sql_query = f'DELETE FROM passwords WHERE id = {unique_key}'
         self.run_query(sql_query)
 
+    def get_by_id(self, unique_key):
+        """get one record from the db through its id
 
-    def get_by_id(self):
-        pass
+        Args:
+            unique_key (int):  id of the row
+
+        Returns:
+            tuple: (id, site, username, password)
+        """
+        sql_query = f'SELECT * FROM passwords WHERE id = {unique_key}'
+        data = self.run_query(sql_query)
+        return data.fetchone()
 
     def get_all(self):
         """get all of the passwords records in the db
